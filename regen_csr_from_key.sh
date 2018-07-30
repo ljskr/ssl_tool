@@ -36,5 +36,5 @@ emailAddress="admin@example.com"
 # openssl genrsa -out $1.key 2048
 # openssl req -new -key $1.key -out $1.csr -config ../req.conf
 
-openssl req -new -sha256 -nodes -newkey rsa:2048 -keyout ${KEY_FILE} -out ${CSR_FILE} -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
-
+# openssl req -new -sha256 -nodes -newkey rsa:2048 -keyout ${KEY_FILE} -out ${CSR_FILE} -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
+openssl req -new -sha256 -nodes -key ${KEY_FILE} -out ${CSR_FILE} -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
