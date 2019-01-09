@@ -38,7 +38,12 @@ emailAddress="admin@example.com"
 # openssl genrsa -out $1.key 2048
 # openssl req -new -key $1.key -out $1.csr -config ../req.conf
 
-openssl req -new -sha256 -nodes -newkey rsa:2048 -keyout ${KEY_FILE} -out ${CSR_FILE} -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
+if [ ! -f "prime256v1.pem" ];then
+  echo "=> generate prime256v1 param file for ecc."
+  openssl ecparam -name prime256v1 -out prime256v1.pem
+fi
+
+openssl req -new -sha256 -nodes -newkey ec:prime256v1.pem -keyout ${KEY_FILE} -out ${CSR_FILE} -subj "/C=${C}/ST=${ST}/L=${L}/O=${O}/OU=${OU}/CN=${CN}/emailAddress=${emailAddress}"
 
 openssl x509 -req -sha256 -days 3650 -CA ../ca/ca.crt -CAkey ../ca/ca.key -CAcreateserial -in ${CSR_FILE} -out ${CERT_FILE} -extfile v3.ext
 

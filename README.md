@@ -20,9 +20,18 @@
 #### 1. 创建私钥(key)
 
 ```bash
-# 输出 key 密钥文件。
+# 输出 key 密钥文件。以下方法任选一。
 
 openssl genrsa -out my.key 2048   # 证书长度为 2048 字节
+
+# 或者 ecc 算法密钥
+openssl ecparam -genkey -name prime256v1 -out my.key  # 使用 prime256v1 算法
+
+# 如需要加密密钥。加密时需要设定密码，后续每次使用私钥都要输入密码，适合于ca使用。
+# rsa
+openssl genrsa -aes256 -out my.key 2048 # 使用 aes256 加密，其他可选: -des3
+# ecc，在上面密钥的基础上，运行下面命令
+openssl ec -aes256 -in my.key -out my_enc.key
 ```
 
 #### 2. 生成签名请求(csr)
@@ -61,6 +70,10 @@ openssl req -x509 -sha256 -days 3650 -newkey rsa:2048 -keyout app.key -out app.c
 
 # 如果不设置密码，则可以加上 -nodes 参数，如下
 # openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:2048 -keyout app.key -out app.crt
+
+# ecc
+openssl ecparam -name prime256v1 -out ec.pem  # 使用 prime256v1 算法，先生成参数文件，后一步newkey需要
+openssl req -x509 -sha256 -days 3650 -newkey ec:ec.pem -keyout app.key -out app.crt
 ```
 
 #### 2. 通过配置文件，非交互式生成证书请求文件(CSR)
